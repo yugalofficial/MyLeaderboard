@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Webster - Bug Hunting (Python) Leaderboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #222;
+            color: #fff;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+        }
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 10px 0;
+            text-align: center;
+            font-size: 20px;
+            font-weight: bold;
+            color: #fff;
+            backdrop-filter: blur(10px);
+        }
+        .container {
+            margin-top: 70px;
+            width: 60%;
+            margin-left: auto;
+            margin-right: auto;
+            padding: 20px;
+            background: #333;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(255, 255, 255, 0.1);
+        }
+        h2, h3 {
+            margin: 10px 0;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            background: #444;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        th, td {
+            padding: 12px;
+            border: 1px solid #555;
+            text-align: center;
+        }
+        th {
+            background: #000;
+            color: #fff;
+        }
+        tr:nth-child(even) {
+            background: #555;
+        }
+        .winner-selection {
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+        input {
+            width: 60px;
+            padding: 5px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            text-align: center;
+        }
+        button {
+            background: gold;
+            color: #000;
+            border: none;
+            padding: 8px 15px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #ffcc00;
+        }
+        .footer {
+            margin-top: 20px;
+            font-size: 14px;
+            color: #aaa;
+        }
+        .print-section {
+            display: none;
+            text-align: left;
+            color: #000;
+            background: #fff;
+            padding: 20px;
+        }
+        .report-header {
+            text-align: center;
+            font-size: 22px;
+            font-weight: bold;
+        }
+        .report-footer {
+            text-align: center;
+            font-size: 14px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="navbar">Webster - Bug Hunting (Python)</div>
+
+    <div class="container">
+        <h2>Leaderboard</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Rank</th>
+                    <th>Name</th>
+                    <th>Score</th>
+                </tr>
+            </thead>
+            <tbody id="leaderboard-body">
+                <!-- Data will be inserted here -->
+            </tbody>
+        </table>
+
+        <div class="winner-selection">
+            <label for="winner-count">Select No. of Winners:</label>
+            <input type="number" id="winner-count" min="1" max="10" value="3">
+            <button onclick="showWinners()">Show Winners</button>
+        </div>
+
+        <h2>🏆 Top Selected Winners 🏆</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Rank</th>
+                    <th>Name</th>
+                    <th>Score</th>
+                </tr>
+            </thead>
+            <tbody id="winners-body">
+                <!-- Selected winners will be displayed here -->
+            </tbody>
+        </table>
+
+        <button onclick="printReport()">Print Report</button>
+    </div>
+
+    <div class="footer">
+        Created by <a href="https://www.linkedin.com/in/YOUR-LINKEDIN" target="_blank" style="color: #fff;">Yugal</a>
+    </div>
+
+    <!-- Printable Report Section -->
+    <div class="print-section" id="print-section">
+        <div class="report-header">
+            <h1>Websters - Techelons 2025</h1><br>
+            <h3>🏆 Webster - Bug Hunting (Python) 2025 🏆</h3>
+        </div>
+      
+        <h3>Congratulations to Our Top 3 Winners!</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Rank</th>
+                    <th>Name</th>
+                    <th>Score</th>
+                </tr>
+            </thead>
+            <tbody id="print-winners-body">
+                <!-- Winners will be inserted here -->
+            </tbody>
+        </table>
+
+        <h3>List of All Participants</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Rank</th>
+                    <th>Name</th>
+                    <th>Score</th>
+                </tr>
+            </thead>
+            <tbody id="print-leaderboard-body">
+                <!-- Full leaderboard will be inserted here -->
+            </tbody>
+        </table>
+
+        <div class="report-footer">
+            This Report is created by <b>Yugal (Secretary)</b>
+        </div>
+    </div>
+
+    <script>
+        const scriptURL = "https://script.google.com/macros/s/AKfycbyOE2BwnSBySQ0MtF6eSOMJC72pUfQfJRRTSO6hGhjzqusblQfjKp75IRypkDsgSUj9/exec"; // Replace with your Apps Script URL
+
+        async function fetchLeaderboard() {
+            try {
+                const response = await fetch(scriptURL);
+                const data = await response.json();
+                const tbody = document.getElementById("leaderboard-body");
+                tbody.innerHTML = "";
+
+                data.forEach((entry, index) => {
+                    const row = document.createElement("tr");
+                    row.innerHTML = `<td>${index + 1}</td><td>${entry.name}</td><td>${entry.score}</td>`;
+                    tbody.appendChild(row);
+                });
+            } catch (error) {
+                console.error("Error fetching leaderboard:", error);
+            }
+        }
+
+        function showWinners() {
+            let n = document.getElementById("winner-count").value;
+            n = Math.max(1, Math.min(n, 10));
+            const tbody = document.getElementById("winners-body");
+            tbody.innerHTML = "";
+
+            fetch(scriptURL).then(response => response.json()).then(data => {
+                for (let i = 0; i < n && i < data.length; i++) {
+                    const row = document.createElement("tr");
+                    row.innerHTML = `<td>${i + 1}</td><td>${data[i].name}</td><td>${data[i].score}</td>`;
+                    tbody.appendChild(row);
+                }
+            });
+        }
+
+        function printReport() {
+            fetch(scriptURL).then(response => response.json()).then(data => {
+                const winnersBody = document.getElementById("print-winners-body");
+                const leaderboardBody = document.getElementById("print-leaderboard-body");
+                winnersBody.innerHTML = leaderboardBody.innerHTML = "";
+
+                data.forEach((entry, index) => {
+                    const row = `<tr><td>${index + 1}</td><td>${entry.name}</td><td>${entry.score}</td></tr>`;
+                    if (index < 3) winnersBody.innerHTML += row;
+                    leaderboardBody.innerHTML += row;
+                });
+
+                document.body.innerHTML = document.getElementById("print-section").innerHTML;
+                window.print();
+                location.reload();
+            });
+        }
+
+        fetchLeaderboard();
+        setInterval(fetchLeaderboard, 3000);
+    </script>
+
+</body>
+</html>
